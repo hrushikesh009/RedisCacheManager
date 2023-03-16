@@ -1,17 +1,12 @@
 # Intro
 
-This is a simple bot that says yo-mama jokes borrowing heavilly from https://github.com/abhay1/django-facebook-messenger-bot-tutorial and the accompanying tutorial.
+This is a simple redis cache based django demonstration that will help you get started with basic of the Redis and Django Application!
 
 # Requirements
 
 - Python 3.0
 - Make sure you have pip (pip --version)
 - pip install virtualenv to install virtual environment
-- Telegram messenger (you can also use the web version at web.telegram.org)
-
-### Sample Video
-
-https://drive.google.com/drive/folders/1o0xK000ZToAbwljM81HhWx5-JplOcNft?usp=sharing
 
 
 ## What to do
@@ -20,7 +15,7 @@ To get this running, you need the following. First install dependencies
 
 ### Step 0 : Clone the Repository
 
-`git clone https://github.com/hrushikesh009/TelegramBot.git`
+`git clone https://github.com/hrushikesh009/RedisCacheManager.git`
 
 
 ### Step 1 : Install dependencies
@@ -29,15 +24,15 @@ To get this running, you need the following. First install dependencies
 
 ### Step 2 : Database Setup
 
-In this tutorial, I utilized the MySQL Database as I already had MySQL client setup. You are free to choose the Database based on your own priority.
+In this tutorial, I utilized the Postgres Database as I already had Postgres client setup. You are free to choose the Database based on your own priority.
 
-You have to install the Mysql client and set up a simple database with user and password privileges
+You have to install the postgres client and set up a simple database with user and password privileges
 
 `DATABASES = {
 
     'default': {
     
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         
         'NAME': 'Your Database Name',
         
@@ -55,7 +50,27 @@ You have to install the Mysql client and set up a simple database with user and 
 Below link helps in setting up django with a simple postgres Database
 https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8
 
-### Step 3 : Run migrations
+###Step 3: Database Creation
+
+Use the Below command to connect to the postgres instance
+
+`sudo -u postgres psql`
+
+First, create a database for your project:
+
+`CREATE DATABASE <DATABASE NAME>;`
+
+Run Below Commands to grant PRIVILEGES
+
+`CREATE USER <USER> WITH PASSWORD '<PASSWORD>';`
+
+`ALTER ROLE<USER> SET client_encoding TO 'utf8';
+ ALTER ROLE <USER> SET default_transaction_isolation TO 'read committed';
+ ALTER ROLE <USER> SET timezone TO 'UTC';`
+ 
+ `GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;`
+
+### Step 4 : Run migrations
 
 `python manage.py makemigrations`
 
@@ -63,7 +78,15 @@ https://stackpython.medium.com/how-to-start-django-project-with-a-database-postg
 
 This will setup all the necessary tables.
 
-### Step 4 : Start the local server
+### Step 5: Populate Database
+
+Below commands will populated database with raw data to work with Redis Examples!
+
+`python manage.py write_data_to_redis`
+
+`python manage.py data_writer`
+
+### Step 6 : Start the local server
 
 And start the server with 
 
