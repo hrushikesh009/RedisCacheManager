@@ -1,6 +1,6 @@
 # Intro
 
-This is a simple redis cache based django demonstration that will help you get started with basic of the Redis and Django Application!
+This is a simple Redis Cache based Django demonstration that will help you get started with basic of the Redis and Django Application!
 
 # Requirements
 
@@ -50,7 +50,7 @@ You have to install the postgres client and set up a simple database with user a
 Below link helps in setting up django with a simple postgres Database
 https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8
 
-###Step 3: Database Creation
+### Step 3: Database Creation
 
 Use the Below command to connect to the postgres instance
 
@@ -64,11 +64,11 @@ Run Below Commands to grant PRIVILEGES
 
 `CREATE USER <USER> WITH PASSWORD '<PASSWORD>';`
 
-`ALTER ROLE<USER> SET client_encoding TO 'utf8';
- ALTER ROLE <USER> SET default_transaction_isolation TO 'read committed';
- ALTER ROLE <USER> SET timezone TO 'UTC';`
+`ALTER ROLE<USER> SET client_encoding TO 'utf8';`
+`ALTER ROLE <USER> SET default_transaction_isolation TO 'read committed';`
+`ALTER ROLE <USER> SET timezone TO 'UTC';`
  
- `GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;`
+`GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;`
 
 ### Step 4 : Run migrations
 
@@ -92,46 +92,24 @@ And start the server with
 
 `python manage.py runserver`
 
-### Step 5 : Download and use ngrok
+### Step 7: Play with the Endpoints
 
-You need an HTTPS url for most webhooks for bots to work. For purely development purposes you can use ngrok. It gives a web-accessible HTTPS url that tunnels through to your localhost.
-Download ngrok (https://ngrok.com/)  , got to a new tab on your terminal and start it with 
+Provide Device Latest Information
+`'device_info/<str:device_id>/'` 
 
-`ngrok http 8000`
+Provides Start and End Location of the Device
+`device_start_end_location/<str:device_id>/`
 
-At this point, you will have to add the URLs to ALLOWED_HOSTS in `Telegram_Bot.settings`.
+Provides Data Location Points based on Time range
+`device_location_points/<str:device_id>/`
 
-### Step 6 : Talk to the BotFather and get and set your bot token
+Above endpoints require
+- start_time
+- end_time
 
-Start telegram, and search for the Botfather. Talk to the Botfather on Telegram and give the command `/newbot` to create a bot and follow the instructions to get a token.
+as query paramter to provide information
 
-Copy the token and paste in `FunBot/views.py`
 
-### Step 7 : Set your webhook by sending a post request to the Telegram API
-
-If you are on a system where you can run a curl command, run the following command in your terminal (Remember to replace ngrok_url and bot_token)
-
-`curl -F “url=<ngrok_url>/chat/c817304a3d163ebd58b44dd446eba29572300724098cdbca1a/“ https://api.telegram.org/bot<bot_token>/setWebhook`
-
-Alternatively, you can use some service like Postman or hurl.it just remember to do the following:
-
-- Request type is "POST"
-- url to post to https://api.telegram.org/bot<bot_token>/setWebhook
-- as parameters add this (name, value) pair: (url, <ngrok_url>/chat/c817304a3d163ebd58b44dd446eba29572300724098cdbca1a/)
-
-You should get a response that states that "webhook has been set"
-
-### Step 8 : Talk to the bot
-
-You should now be able to talk to the bot and get responses from it
-
-### Step 9: Capture the ClickStream
-
-Once the Users start interacting with the bot the data will be captured in the database.
-
-If you visit `url = <ngrok_url>/chat/home/` 
-
-You would be able to view all the users using your bot and their interactions with the bot.
 
 
 

@@ -1,11 +1,10 @@
 
+import datetime
 import os
 from pathlib import Path
 
 import pandas as pd
-
 from django.core.management.base import BaseCommand
-import datetime
 
 from API.models import DeviceLocationData
 
@@ -43,7 +42,7 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
                 print("Unable to Save data")
-                """Preferabel logg or save the certain file"""
+                """Preferable log or save the certain file"""
 
         print(f'{count} value was written to the database')
         

@@ -1,11 +1,11 @@
+import datetime
 import os
 from pathlib import Path
-import pandas as pd
-import datetime
-import redis
-from django.core.management.base import BaseCommand
 
+import pandas as pd
+import redis
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
@@ -46,7 +46,6 @@ class Command(BaseCommand):
 
         
                 # Compare the timestamps of the current and existing device data
-
                 if timestamp > existing_device_data['timestamp']:
                     redis_client.setex(device_id,settings.EXPIRE_TIME, str(value))
             else:

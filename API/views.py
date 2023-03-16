@@ -1,17 +1,15 @@
 
 import datetime
-import pytz
 
+import pytz
 import redis
 from django.conf import settings
+from django.db.models import Q
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import DeviceLocationData
-
-from django.db.models import Q
-
 
 redis_connection = {
     'host':'localhost',
@@ -31,9 +29,8 @@ class DeviceInfoView(APIView):
     
     def get(self, request, device_id):
         try:
-            
             device_id_key = f"device:{device_id}"
-
+            cache_details = 'Cache Miss'
             try:
                 redis_client = redis.Redis(host=f"{redis_connection['host']}", port=f"{redis_connection['port']}", db=f"{redis_connection['db']}")
                 redis_client.ping()
@@ -44,10 +41,12 @@ class DeviceInfoView(APIView):
             
             if redis_client.exists(device_id_key):
                 """Cache Hit"""
+                cache_details = 'Cache Hit'
                 device_data = eval(redis_client.get(device_id_key))
 
             else:
                 """Cache Miss"""
+                cache_details = 'Cache Miss'
                 device_data = DeviceLocationData.objects.filter(device_id = device_id).order_by('-timestamp').first()
                 if device_data:
 
@@ -61,13 +60,14 @@ class DeviceInfoView(APIView):
                 else:
                     return Response({
                         'device_id': device_id,
-                        'message': 'Data Not Found',
+                        'message': 'Data Not Found'
                     },status=404)
                 
             return Response({
                         'device_id': device_id,
                         'device_data': device_data,
-                        'messgae': 'Data Successfully retrived!'
+                        'messgae': 'Data Successfully retrived!',
+                        'Cache Details': cache_details
                         })
                 
         except Exception as e:
@@ -96,7 +96,7 @@ class DeviceLocationView(APIView):
 
             
             if redis_client.exists(device_id_key):
-                print('Hit')
+                cache_details = 'Cache Hit'
                 """Cache Hit"""
                 #Get the latest data for the given device id as end_location
                 device_data = eval(redis_client.get(device_id_key))
@@ -107,8 +107,8 @@ class DeviceLocationView(APIView):
                             }
                 
             else:
-                print('Miss')
                 """Cache Miss"""
+                cache_details = 'Cache Miss'
                 #If the data is expired or not present in the database retrive it from the database
                 device_data = DeviceLocationData.objects.filter(device_id = device_id).order_by('-timestamp').first()
                 if device_data:
@@ -143,11 +143,11 @@ class DeviceLocationView(APIView):
                         'device_id': device_id,
                         'start_location': start_location,
                         'end_location': end_location,
-                        'messgae': 'Data Successfully retrived!'
+                        'messgae': 'Data Successfully retrived!',
+                        'Cache Details': cache_details,
                         })
                      
         except Exception as e:
-            print(e)
             """Prefer Logging the Information"""
             return Response({'device_id': device_id, 'message': "Error Occured!"},status=500)
         
@@ -161,7 +161,6 @@ class DeviceLocationPointsView(APIView):
     
     def get(self, request, device_id):
         try:
-            #import pdb;pdb.set_trace();
             start_time_str = request.query_params.get('start_time')
             end_time_str = request.query_params.get('end_time')
                                             
@@ -192,7 +191,6 @@ class DeviceLocationPointsView(APIView):
 
             
         except Exception as e:
-            print(e)
             """Prefer Logging the Information"""
             return Response({'device_id': device_id, 'message': "Error Occured!"},status=500)
 

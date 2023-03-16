@@ -5,5 +5,4 @@ __pycache__/
 .idea/
 *.bak
 *.xlsx
-migrations/
 env/
