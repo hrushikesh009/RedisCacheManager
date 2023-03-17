@@ -11,13 +11,6 @@ from rest_framework.views import APIView
 
 from .models import DeviceLocationData
 
-redis_connection = {
-    'host':'localhost',
-    'port': 6379,
-    'db': 0
-}
-    
-    
 India_tz = pytz.timezone("Asia/Kolkata")
 
 class DeviceInfoView(APIView):
@@ -32,7 +25,7 @@ class DeviceInfoView(APIView):
             device_id_key = f"device:{device_id}"
             cache_details = 'Cache Miss'
             try:
-                redis_client = redis.Redis(host=f"{redis_connection['host']}", port=f"{redis_connection['port']}", db=f"{redis_connection['db']}")
+                redis_client = redis.Redis(host=f"{settings.redis_connection['host']}", port=f"{settings.redis_connection['port']}", db=f"{settings.redis_connection['db']}")
                 redis_client.ping()
             except redis.exceptions.ConnectionError:
                 return Response({
@@ -87,7 +80,7 @@ class DeviceLocationView(APIView):
             device_id_key = f"device:{device_id}"
 
             try:
-                redis_client = redis.Redis(host=f"{redis_connection['host']}", port=f"{redis_connection['port']}", db=f"{redis_connection['db']}")
+                redis_client = redis.Redis(host=f"{settings.redis_connection['host']}", port=f"{settings.redis_connection['port']}", db=f"{settings.redis_connection['db']}")
                 redis_client.ping()
             except redis.exceptions.ConnectionError:
                 return Response({
@@ -175,6 +168,9 @@ class DeviceLocationPointsView(APIView):
                         'device_id': device_id,
                         'messgae': "Unable to Extract Data! Please check the data format ex.'%Y-%m-%dT%H:%M:%SZ' "
                         })
+            
+            if start_time > end_time:
+                return Response({'device_id': device_id, 'message': "Start Time cannot be greater than or equal to End Time"},status=200)
 
     
 

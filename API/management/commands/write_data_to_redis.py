@@ -11,9 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 # Create a Redis cache server
 try:
-    redis_client = redis.Redis(host='localhost', port=6379, db=0)
+    redis_client = redis.Redis(host=f"{settings.redis_connection['host']}", port=f"{settings.redis_connection['port']}", db=f"{settings.redis_connection['db']}")
     redis_client.ping()
-except Exception:
+except redis.exceptions.ConnectionError:
     print("Unable to Connect to Redis!")
 
 class Command(BaseCommand):
