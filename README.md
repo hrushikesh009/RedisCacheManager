@@ -70,7 +70,16 @@ Run Below Commands to grant PRIVILEGES
  
 `GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;`
 
-### Step 4 : Run migrations
+### Step 4: Set up Redis Client
+
+Under the settings.py placed in RedisCacheManager
+`redis_connection = {
+    'host':<HOST NAME>,
+    'port': <PORT>,
+    'db': <DATABASE>
+}`
+
+### Step 5 : Run migrations
 
 `python manage.py makemigrations`
 
@@ -78,7 +87,7 @@ Run Below Commands to grant PRIVILEGES
 
 This will setup all the necessary tables.
 
-### Step 5: Populate Database
+### Step 6: Populate Database
 
 Below commands will populated database with raw data to work with Redis Examples!
 
@@ -86,13 +95,13 @@ Below commands will populated database with raw data to work with Redis Examples
 
 `python manage.py data_writer`
 
-### Step 6 : Start the local server
+### Step 7 : Start the local server
 
 And start the server with 
 
 `python manage.py runserver`
 
-### Step 7: Play with the Endpoints
+### Step 8: Play with the Endpoints
 
 Provide Device Latest Information
 `'device_info/<str:device_id>/'` 
