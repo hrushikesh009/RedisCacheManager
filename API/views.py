@@ -61,7 +61,7 @@ class DeviceInfoView(APIView):
                     return Response({
                         'device_id': device_id,
                         'message': 'Data Not Found'
-                    },status=404)
+                    },status=200)
                 
             return Response({
                         'device_id': device_id,
@@ -137,7 +137,7 @@ class DeviceLocationView(APIView):
                 return Response({
                             'device_id': device_id,
                             'message': 'Data Not Found',
-                        },status=404)
+                        },status=200)
             
             return Response({
                         'device_id': device_id,
@@ -165,23 +165,31 @@ class DeviceLocationPointsView(APIView):
             end_time_str = request.query_params.get('end_time')
                                             
             if not start_time_str or not end_time_str:
-                return Response({'device_id': device_id, 'message': "Start and End time parameters required!"},status=404)
+                return Response({'device_id': device_id, 'message': "Start and End time parameters required!"},status=200)
             
+            try:
+                start_time = datetime.datetime.strptime(start_time_str.strip(), '%Y-%m-%dT%H:%M:%SZ')
+                end_time = datetime.datetime.strptime(end_time_str.strip(), '%Y-%m-%dT%H:%M:%SZ')
+            except Exception as e:
+                return Response({
+                        'device_id': device_id,
+                        'messgae': "Unable to Extract Data! Please check the data format ex.'%Y-%m-%dT%H:%M:%SZ' "
+                        })
 
-            start_time = datetime.datetime.strptime(start_time_str.strip(), '%Y-%m-%dT%H:%M:%SZ')
-            end_time = datetime.datetime.strptime(end_time_str.strip(), '%Y-%m-%dT%H:%M:%SZ')
     
 
             location_points = DeviceLocationData.objects.values('latitude', 
                                                                 'longitude', 
-                                                                'timestamp').filter(
-                Q(timestamp__gte = start_time) & Q(timestamp__lte = end_time)).order_by('-timestamp')
+                                                                'timestamp')\
+                            .filter((Q(timestamp__gte = start_time) & Q(timestamp__lte = end_time)),
+                                    device_id=device_id)\
+                            .order_by('-timestamp')
 
             if not location_points:
                 return Response({
                             'device_id': device_id,
                             'message': 'Data Not Found',
-                        },status=404)
+                        },status=200)
 
             return Response({
                         'device_id': device_id,
