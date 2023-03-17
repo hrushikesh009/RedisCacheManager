@@ -25,7 +25,7 @@ class DeviceInfoView(APIView):
             device_id_key = f"device:{device_id}"
             cache_details = 'Cache Miss'
             try:
-                redis_client = redis.Redis(host=f"{settings.redis_connection['host']}", port=f"{settings.redis_connection['port']}", db=f"{settings.redis_connection['db']}")
+                redis_client = redis.Redis(host=f"{settings.REDIS_CONNECTION['host']}", port=f"{settings.REDIS_CONNECTION['port']}", db=f"{settings.REDIS_CONNECTION['db']}")
                 redis_client.ping()
             except redis.exceptions.ConnectionError:
                 return Response({
@@ -64,6 +64,7 @@ class DeviceInfoView(APIView):
                         })
                 
         except Exception as e:
+            print(e)
             """Prefer Logging the Information"""
             return Response({'device_id': device_id, 'message': "Error Occured!"},status=500)
         
@@ -80,7 +81,7 @@ class DeviceLocationView(APIView):
             device_id_key = f"device:{device_id}"
 
             try:
-                redis_client = redis.Redis(host=f"{settings.redis_connection['host']}", port=f"{settings.redis_connection['port']}", db=f"{settings.redis_connection['db']}")
+                redis_client = redis.Redis(host=f"{settings.REDIS_CONNECTION['host']}", port=f"{settings.REDIS_CONNECTION['port']}", db=f"{settings.REDIS_CONNECTION['db']}")
                 redis_client.ping()
             except redis.exceptions.ConnectionError:
                 return Response({
@@ -141,6 +142,7 @@ class DeviceLocationView(APIView):
                         })
                      
         except Exception as e:
+            print(e)
             """Prefer Logging the Information"""
             return Response({'device_id': device_id, 'message': "Error Occured!"},status=500)
         
@@ -195,6 +197,7 @@ class DeviceLocationPointsView(APIView):
 
             
         except Exception as e:
+            print(e)
             """Prefer Logging the Information"""
             return Response({'device_id': device_id, 'message': "Error Occured!"},status=500)
 
