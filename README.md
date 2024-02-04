@@ -1,124 +1,112 @@
-# Intro
+# RedisCacheManager
 
-This is a simple Redis Cache based Django demonstration that will help you get started with basic of the Redis and Django Application!
+## Introduction
 
-# Requirements
+RedisCacheManager is a Django application demonstrating the integration of Redis caching for efficient data retrieval. It focuses on providing device information, start and end locations, and location points based on time range.
+
+## Requirements
 
 - Python 3.0
-- Make sure you have pip (pip --version)
-- pip install virtualenv to install virtual environment
+- Ensure pip is installed (`pip --version`)
+- Install virtual environment: `pip install virtualenv`
 
+## Getting Started
 
-## What to do
+To run this application, follow these steps:
 
-To get this running, you need the following. First install dependencies
+### Step 0: Clone the Repository
 
-### Step 0 : Clone the Repository
+```sh
+git clone https://github.com/hrushikesh009/RedisCacheManager.git
+```
 
-`git clone https://github.com/hrushikesh009/RedisCacheManager.git`
+### Step 1: Install Dependencies
 
+```sh
+pip install -r requirements.txt
+```
 
-### Step 1 : Install dependencies
+### Step 2: Database Setup
 
-`pip install -r requirements.txt`
+Utilizing Postgres Database in this tutorial, modify the settings in `RedisCacheManager/settings.py`:
 
-### Step 2 : Database Setup
-
-In this tutorial, I utilized the Postgres Database as I already had Postgres client setup. You are free to choose the Database based on your own priority.
-
-You have to install the postgres client and set up a simple database with user and password privileges
-
-`DATABASES = {
-
+```python
+DATABASES = {
     'default': {
-    
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        
         'NAME': 'Your Database Name',
-        
-        'HOST': 'localhost', # usually its localhost but if you have a cloud host specific it over here
-        
+        'HOST': 'localhost',
         'USER': 'Database Username',
-        
-        'PASSWORD': Database Passwordd,
-        
+        'PASSWORD': 'Database Password',
         'PORT': 'Database Port'
-        
     }
-}`
+}
+```
 
-Below link helps in setting up django with a simple postgres Database
-https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8
+Refer to [this link](https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8) for PostgreSQL setup.
 
 ### Step 3: Database Creation
 
-Use the Below command to connect to the postgres instance
+Use the following commands to connect to the PostgreSQL instance:
 
-`sudo -u postgres psql`
+```sh
+sudo -u postgres psql
+```
 
-First, create a database for your project:
+Create a database for your project:
 
-`CREATE DATABASE <DATABASE NAME>;`
+```sh
+CREATE DATABASE <DATABASE NAME>;
+```
 
-Run Below Commands to grant PRIVILEGES
+Run the following commands to grant privileges:
 
-`CREATE USER <USER> WITH PASSWORD '<PASSWORD>';`
-
-`ALTER ROLE<USER> SET client_encoding TO 'utf8';`
-`ALTER ROLE <USER> SET default_transaction_isolation TO 'read committed';`
-`ALTER ROLE <USER> SET timezone TO 'UTC';`
- 
-`GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;`
+```sh
+CREATE USER <USER> WITH PASSWORD '<PASSWORD>';
+ALTER ROLE<USER> SET client_encoding TO 'utf8';
+ALTER ROLE <USER> SET default_transaction_isolation TO 'read committed';
+ALTER ROLE <USER> SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE <DATABASE NAME> TO <USER>;
+```
 
 ### Step 4: Set up Redis Client
 
-Under the settings.py placed in RedisCacheManager
-`redis_connection = {
-    'host':<HOST NAME>,
-    'port': <PORT>,
-    'db': <DATABASE>
-}`
+In `RedisCacheManager/settings.py`, configure the Redis connection:
 
-### Step 5 : Run migrations
+```python
+redis_connection = {
+    'host': '<HOST NAME>',
+    'port': '<PORT>',
+    'db': '<DATABASE>'
+}
+```
 
-`python manage.py makemigrations`
+### Step 5: Run Migrations
 
-`python manage.py migrate`
-
-This will setup all the necessary tables.
+```sh
+python manage.py makemigrations
+python manage.py migrate
+```
 
 ### Step 6: Populate Database
 
-Below commands will populated database with raw data to work with Redis Examples!
+Run the following commands to populate the database with raw data:
 
-`python manage.py write_data_to_redis`
+```sh
+python manage.py write_data_to_redis
+python manage.py data_writer
+```
 
-`python manage.py data_writer`
+### Step 7: Start the Local Server
 
-### Step 7 : Start the local server
+```sh
+python manage.py runserver
+```
 
-And start the server with 
+### Step 8: Explore Endpoints
 
-`python manage.py runserver`
+- Provide Device Latest Information: `device_info/<str:device_id>/`
+- Get Device Start and End Location: `device_start_end_location/<str:device_id>/`
+- Retrieve Device Location Points based on Time Range: `device_location_points/<str:device_id>/`
 
-### Step 8: Play with the Endpoints
-
-Provide Device Latest Information
-`'device_info/<str:device_id>/'` 
-
-Provides Start and End Location of the Device
-`device_start_end_location/<str:device_id>/`
-
-Provides Data Location Points based on Time range
-`device_location_points/<str:device_id>/`
-
-Above endpoints require
-- start_time
-- end_time
-
-as query paramter to provide information
-
-
-
-
-
+These endpoints require `start_time` and `end_time` as query parameters to provide information.
